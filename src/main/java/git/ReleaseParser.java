@@ -48,9 +48,7 @@ public class ReleaseParser {
                 JSONObject jsonObject = jsArray.getJSONObject(i);
                 releases.add(jsonObject.get("tag_name").toString());
             }
-            for (int i=0;i<releases.size();i++){
-                System.out.println(releases.get(i));
-            }
+
             packageParser.parsePackage(releases, git);
 
         } catch (IOException | InterruptedException e) {

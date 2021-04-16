@@ -7,13 +7,23 @@ import java.util.Map;
 
 public class DiscardedPackage {
     private final String packageName;
-    private final String lifetime;
+    private  String lifetime;
     private final List<Map<String, Double>> previousReleaseMetices;
+    private int versionLength = 0;
+
+
 
     public DiscardedPackage(String packageName, String lifetime, List<Map<String, Double>> previousReleaseMetices) {
         this.packageName = packageName;
         this.lifetime = lifetime;
         this.previousReleaseMetices = previousReleaseMetices;
+    }
+
+    public int getVersionLength() {
+        return versionLength;
+    }
+    public void setVersionLength(int versionLength) {
+        this.versionLength = versionLength;
     }
 
     public String getPackageName() {
@@ -22,6 +32,9 @@ public class DiscardedPackage {
 
     public String getLifetime() {
         return lifetime;
+    }
+    public void setLifetime(String lifetime){
+        this.lifetime = lifetime;
     }
 
     public List<Map<String, Double>> getPreviousReleaseMetices() {
@@ -33,6 +46,7 @@ public class DiscardedPackage {
         jsonObject.append("package_name", this.packageName);
         jsonObject.append("lifetime", this.lifetime);
         jsonObject.append("metrics", this.previousReleaseMetices);
+        jsonObject.append("length", this.versionLength);
         return jsonObject;
     }
 
