@@ -1,35 +1,32 @@
 package git;
 
-import org.codehaus.plexus.util.Scanner;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.TransportException;
-import org.eclipse.jgit.lib.Constants;
-import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.revwalk.RevTree;
-import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public class ReleaseParser {
     public static void main(String[] args) throws InvalidRemoteException, TransportException, GitAPIException, IOException {
 
-//        File myObj = new File("filename.txt");
-//        Scanner myReader = new Scanner(myObj);
+        PackageParser packageParser = new PackageParser();
+        List<String>releases = new ArrayList<String>();
+        List<String>data = new ArrayList<String>();
 
         FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
-        Repository repository = repositoryBuilder.setGitDir(new File("H:\\ES_git\\elasticsearch\\.git"))
+        Repository repository = repositoryBuilder.setGitDir(new File("H:\\Calculator\\PalmCalc\\.git"))
                 .readEnvironment() // scan environment GIT_* variables
                 .findGitDir() // scan up the file system tree
                 .setMustExist(true)
@@ -37,37 +34,36 @@ public class ReleaseParser {
 
         Git git = new Git(repository);
 
-        git.checkout()
-                .setCreateBranch(false)
-                .setName("Elasticsearch")
-                .setStartPoint("refs/tags/v7.11.2")
-                .call();
+        var api =  "https://api.github.com/repositories/189011689/releases";
+        var request = HttpRequest.newBuilder().GET().uri(URI.create(api)).build();
+        var client = HttpClient.newBuilder().build();
+        try {
+            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            JSONArray jsArray = new JSONArray(response.body());
 
-//        List<Ref> tags = git.tagList().call();
-//
-//        System.out.println(git.tagList().call());
-//        for (Ref tag : tags) {
-//            System.out.println("Tag: " + tag.getName());
-//        }
-//
-//        List<Ref> branches = new Git(repository).branchList().setListMode(ListBranchCommand.ListMode.ALL).call();
-//
-//        int branchCount = 0;
-//        for (Ref branch : branches) {
-//
-//            System.out.println("Branch: " + branch + " " + branch.getName() + " "
-//                    + branch.getObjectId().getName());
-//            System.out.println("-------------------------------------");
-//            branchCount++;
-//
-//            Iterable<RevCommit> commits = git.log().all().call();
-//
-//            for (RevCommit commit : commits) {
-//                    System.out.println(commit.getName());
-//                    System.out.println(commit.getAuthorIdent().getName());
-//                    System.out.println(new Date(commit.getCommitTime() * 1000L));
-//                    System.out.println(commit.getFullMessage());
-//            }
-//        }
+
+            for (int i= jsArray.length()-1; i>=0; i--){
+                JSONObject jsonObject = jsArray.getJSONObject(i);
+                releases.add(jsonObject.get("tag_name").toString());
+            }
+
+        } catch (IOException | InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        for(int i=0; i<releases.size(); i++){
+
+            git.checkout()
+                    .setCreateBranch(false)
+                    .setName(releases.get(i))
+                    .setStartPoint("refs/tags/"+releases.get(i))
+                    .call();
+
+            System.out.println(releases.get(i));
+
+            packageParser.parsePackage();
+
+        }
     }
 }
