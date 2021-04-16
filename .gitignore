@@ -1,3 +1,6 @@
 .idea
 target
 src/main/resources/gitprojects/**
+.classpath
+.project
+maintainability_predictor.iml
