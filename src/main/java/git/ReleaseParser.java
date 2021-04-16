@@ -26,7 +26,7 @@ public class ReleaseParser {
         List<String>releases = new ArrayList<>();
 
         FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
-        Repository repository = repositoryBuilder.setGitDir(new File("F:\\IIT 8th Semester\\Software Metrics\\elastisearch\\mybatis\\mybatis-3\\.git"))
+        Repository repository = repositoryBuilder.setGitDir(new File(ProjectConstants.PATH+"\\.git"))
                 .readEnvironment() // scan environment GIT_* variables
                 .findGitDir() // scan up the file system tree
                 .setMustExist(true)
@@ -47,6 +47,9 @@ public class ReleaseParser {
             for (int i= jsArray.length()-1; i>=0; i--){
                 JSONObject jsonObject = jsArray.getJSONObject(i);
                 releases.add(jsonObject.get("tag_name").toString());
+            }
+            for (int i=0;i<releases.size();i++){
+                System.out.println(releases.get(i));
             }
             packageParser.parsePackage(releases, git);
 
