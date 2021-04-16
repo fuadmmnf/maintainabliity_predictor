@@ -1,6 +1,7 @@
 .idea
 target
 src/main/resources/gitprojects/**
+src/main/resources/dataset/**
 .classpath
 .project
 maintainability_predictor.iml
