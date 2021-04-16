@@ -3,11 +3,7 @@ package estimator;
 import com.univocity.parsers.csv.CsvWriter;
 import com.univocity.parsers.csv.CsvWriterSettings;
 import models.DiscardedPackage;
-import org.json.JSONArray;
-
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
 
 public class DatasetGenerator {
