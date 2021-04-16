@@ -26,7 +26,7 @@ public class ReleaseParser {
         List<String>releases = new ArrayList<>();
 
         FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
-        Repository repository = repositoryBuilder.setGitDir(new File("H:\\Calculator\\PalmCalc\\.git"))
+        Repository repository = repositoryBuilder.setGitDir(new File("F:\\IIT 8th Semester\\Software Metrics\\elastisearch\\mybatis\\mybatis-3\\.git"))
                 .readEnvironment() // scan environment GIT_* variables
                 .findGitDir() // scan up the file system tree
                 .setMustExist(true)
@@ -34,7 +34,9 @@ public class ReleaseParser {
 
         Git git = new Git(repository);
 
-        var api =  "https://api.github.com/repositories/189011689/releases";
+//        var api =  "https://api.github.com/repositories/189011689/releases";
+//        var api =  "https://api.github.com/repos/elastic/elasticsearch/releases";
+        var api =  "https://api.github.com/repos/mybatis/mybatis-3/releases";
         var request = HttpRequest.newBuilder().GET().uri(URI.create(api)).build();
         var client = HttpClient.newBuilder().build();
         try {
