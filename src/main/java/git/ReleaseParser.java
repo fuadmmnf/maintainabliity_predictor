@@ -22,8 +22,7 @@ public class ReleaseParser {
     public static void main(String[] args) throws InvalidRemoteException, TransportException, GitAPIException, IOException {
 
         PackageParser packageParser = new PackageParser();
-        List<String>releases = new ArrayList<String>();
-        List<String>data = new ArrayList<String>();
+        List<String>releases = new ArrayList<>();
 
         FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
         Repository repository = repositoryBuilder.setGitDir(new File("H:\\Calculator\\PalmCalc\\.git"))
@@ -46,24 +45,11 @@ public class ReleaseParser {
                 JSONObject jsonObject = jsArray.getJSONObject(i);
                 releases.add(jsonObject.get("tag_name").toString());
             }
+            packageParser.parsePackage(releases, git);
 
         } catch (IOException | InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }
-
-        for(int i=0; i<releases.size(); i++){
-
-            git.checkout()
-                    .setCreateBranch(false)
-                    .setName(releases.get(i))
-                    .setStartPoint("refs/tags/"+releases.get(i))
-                    .call();
-
-            System.out.println(releases.get(i));
-
-            packageParser.parsePackage();
-
         }
     }
 }
