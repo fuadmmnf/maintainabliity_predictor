@@ -18,6 +18,8 @@ public class MetricsRunner {
 
         String projectPath = new File(projectpath).getAbsolutePath();
         String [] projectPathParts = projectPath.split("/");
+        File dir = new File("src/main/resources/dataset/" + projectPathParts[projectPathParts.length - 1]  + "/" + tag);
+        if (!dir.exists()) dir.mkdirs();
         String out1 = new File("src/main/resources/dataset/" + projectPathParts[projectPathParts.length - 1]  + "/" + tag + "/" + "class.csv").getAbsolutePath();
         String out2 = new File("src/main/resources/dataset/" + projectPathParts[projectPathParts.length - 1]  + "/" + tag + "/" + "method.csv").getAbsolutePath();
         String out3 = new File("src/main/resources/dataset/" + projectPathParts[projectPathParts.length - 1]  + "/" + tag + "/" + "variable.csv").getAbsolutePath();

@@ -7,10 +7,10 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        String projectPath = "src/main/resources/gitprojects/seata-develop";
+        String projectPath = "src/main/resources/gitprojects/seata";
         try {
             ReleaseParser releaseParser = new ReleaseParser(projectPath);
-            List<String> releases = releaseParser.parseReleaseHistory("https://api.github.com/repositories/189011689/releases");
+            List<String> releases = releaseParser.parseReleaseHistory("https://api.github.com/repos/seata/seata/releases");
 
             for (String release : releases) {
                 releaseParser.checkoutRelease(release);
