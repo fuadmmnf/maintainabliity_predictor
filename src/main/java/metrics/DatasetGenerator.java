@@ -17,13 +17,12 @@ public class DatasetGenerator {
 //        }
 
         String projectPath = new File(rootpath).getAbsolutePath();
-        String[] projectPathParts = projectPath.split(File.separator);
-        File dir = new File(rootpath + File.separator + releasetag);
+        File dir = new File(datasetRoot + File.separator + releasetag + File.separator + packageId);
         if (!dir.exists()) dir.mkdirs();
-        String out1 = new File(datasetRoot + File.separator + releasetag + File.separator + packageId + "class.csv").getAbsolutePath();
-        String out2 = new File(datasetRoot + File.separator + releasetag + File.separator + packageId + "method.csv").getAbsolutePath();
-        String out3 = new File(datasetRoot + File.separator + releasetag + File.separator + packageId + "variable.csv").getAbsolutePath();
-        String out4 = new File(datasetRoot + File.separator + releasetag + File.separator + packageId + "field.csv").getAbsolutePath();
+        String out1 = new File(datasetRoot + File.separator + releasetag + File.separator + packageId + File.separator +"class.csv").getAbsolutePath();
+        String out2 = new File(datasetRoot + File.separator + releasetag + File.separator + packageId + File.separator +"method.csv").getAbsolutePath();
+        String out3 = new File(datasetRoot + File.separator + releasetag + File.separator + packageId + File.separator +"variable.csv").getAbsolutePath();
+        String out4 = new File(datasetRoot + File.separator + releasetag + File.separator + packageId + File.separator +"field.csv").getAbsolutePath();
 
         // use jars?
         boolean useJars = false;
