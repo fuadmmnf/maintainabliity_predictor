@@ -8,35 +8,27 @@ import com.github.mauricioaniche.ck.ResultWriter;
 import java.io.File;
 import java.io.IOException;
 
-public class Runner {
-    public static void main(String[] args) throws IOException {
+public class MetricsRunner {
+    public static void calculateMetricsByDirectory(String projectpath, String tag) throws IOException {
 
 //        if (args == null || args.length < 1) {
 //            System.out.println("Usage java -jar ck.jar <projectPath to project> <use Jars=true|false> <max files per partition, 0=automatic selection> <print variables and fields metrics? True|False>");
 //            System.exit(1);
 //        }
 
-        String projectPath = new File("src/main/resources/gitprojects/libgdx-master").getAbsolutePath();
-        String out1 = new File("src/main/resources/dataset/class.csv").getAbsolutePath();
-        String out2 = new File("src/main/resources/dataset/method.csv").getAbsolutePath();
-        String out3 = new File("src/main/resources/dataset/variable.csv").getAbsolutePath();
-        String out4 = new File("src/main/resources/dataset/field.csv").getAbsolutePath();
+        String projectPath = new File(projectpath).getAbsolutePath();
+        String [] projectPathParts = projectPath.split("/");
+        String out1 = new File("src/main/resources/dataset/" + projectPathParts[projectPathParts.length - 1]  + "/" + tag + "/" + "class.csv").getAbsolutePath();
+        String out2 = new File("src/main/resources/dataset/" + projectPathParts[projectPathParts.length - 1]  + "/" + tag + "/" + "method.csv").getAbsolutePath();
+        String out3 = new File("src/main/resources/dataset/" + projectPathParts[projectPathParts.length - 1]  + "/" + tag + "/" + "variable.csv").getAbsolutePath();
+        String out4 = new File("src/main/resources/dataset/" + projectPathParts[projectPathParts.length - 1]  + "/" + tag + "/" + "field.csv").getAbsolutePath();
 
         // use jars?
         boolean useJars = false;
-        if(args.length >= 2)
-            useJars = Boolean.parseBoolean(args[1]);
-
         // number of files per partition?
         int maxAtOnce = 0;
-        if(args.length >= 3)
-            maxAtOnce = Integer.parseInt(args[2]);
-
         // variables and field results?
         boolean variablesAndFields = true;
-        if(args.length >= 4)
-            variablesAndFields = Boolean.parseBoolean(args[3]);
-
 
         ResultWriter writer = new ResultWriter(out1, out2, out3, out4, variablesAndFields);
 

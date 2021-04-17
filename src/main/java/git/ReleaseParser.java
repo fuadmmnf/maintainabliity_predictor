@@ -19,23 +19,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReleaseParser {
-
-    public static void main(String[] args) throws InvalidRemoteException, TransportException, GitAPIException, IOException {
-
-        PackageParser packageParser = new PackageParser();
-        List<String>releases = new ArrayList<>();
-
+    private final Git git;
+    public ReleaseParser(String projectPath) throws  IOException{
         FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
-        Repository repository = repositoryBuilder.setGitDir(new File("H:\\Calculator\\PalmCalc\\.git"))
+        Repository repository = repositoryBuilder.setGitDir(new File(projectPath + "/.git"))
                 .readEnvironment() // scan environment GIT_* variables
                 .findGitDir() // scan up the file system tree
                 .setMustExist(true)
                 .build();
 
-        Git git = new Git(repository);
+         this.git = new Git(repository);
+    }
 
-        var api =  "https://api.github.com/repositories/189011689/releases";
-        var request = HttpRequest.newBuilder().GET().uri(URI.create(api)).build();
+    public List<String> parseReleaseHistory(String gitApiReleasesURL) throws InvalidRemoteException, TransportException, GitAPIException, IOException {
+
+        List<String>releases = new ArrayList<>();
+
+
+        var request = HttpRequest.newBuilder().GET().uri(URI.create(gitApiReleasesURL)).build();
         var client = HttpClient.newBuilder().build();
         try {
             var response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -46,11 +47,18 @@ public class ReleaseParser {
                 JSONObject jsonObject = jsArray.getJSONObject(i);
                 releases.add(jsonObject.get("tag_name").toString());
             }
-            packageParser.parsePackage(releases, git);
-
         } catch (IOException | InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        return releases;
+    }
+
+    public void checkoutRelease(String release) throws GitAPIException {
+        git.checkout()
+                .setCreateBranch(false)
+                .setName(release)
+                .setStartPoint("refs/tags/"+release)
+                .call();
     }
 }
