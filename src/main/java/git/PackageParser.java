@@ -4,6 +4,7 @@ import models.DiscardedPackage;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.Repository;
 import org.json.JSONObject;
 import pakage_checker.PackageListCalculation;
 
@@ -65,54 +66,25 @@ public class PackageParser {
         return allPackageListDiscarded;
     }
 
-    public void parsePackage(List<String> releases, Git git) throws GitAPIException {
+    public List<DiscardedPackage> generateDiscardedPackages(ReleaseParser releaseParser, String projectPath, List<String> releases)  {
 
-        System.out.println("package parsing.......");
         ArrayList<DiscardedPackage> unMaintablePackageList = new ArrayList<DiscardedPackage>();
         ArrayList<String> allPackageList = new ArrayList<String>();
         ArrayList<DiscardedPackage> allPackageListDiscarded = new ArrayList<DiscardedPackage>();
 
         for (int i = 0; i < releases.size(); i++) {
-            System.out.println(releases.get(i));
-            System.out.println("\n\nNot safe!!");
-            git.reset().setMode(ResetCommand.ResetType.HARD).call();
-            git.checkout()
-                    .setCreateBranch(false)
-                    .setName(releases.get(i))
-                    .setStartPoint("refs/tags/" + releases.get(i))
-                    .call();
-
-            System.out.println("Finish checkout!!");
             try {
-                System.out.println("\n\nSafe now!!!!!!!!");
-//                Thread.sleep(5000);
-                Thread.sleep(1);
-                System.out.println("Start Package calculation");
-
-//                Thread.sleep(1);
-//                String secondProjectFilePath = "F:\\IIT 8th Semester\\Software Metrics\\elastisearch\\mybatis\\mybatis-3";
-//                String firstProjectFilePath = "F:\\IIT 8th Semester\\Software Metrics\\elastisearch\\mybatis\\mybatis-3 - Copy";
-
+                releaseParser.checkoutRelease(releases.get(i));
                 PackageListCalculationForGit packageListCalculation = new PackageListCalculationForGit();
+
 
                 ArrayList<String> localPackageList = new ArrayList<String>();
                 ArrayList<DiscardedPackage> localPackageListDiscarded = new ArrayList<DiscardedPackage>();
 
-                localPackageList = packageListCalculation.getPackageList(ProjectConstants.PATH);
+
+                localPackageList = packageListCalculation.getPackageList(projectPath);
                 localPackageListDiscarded = arrayStringToDiscardedArray(releases.get(i), localPackageList);
 
-                System.out.println("All package = " + allPackageList.size());
-
-//                for (int j = 0; j < allPackageListDiscarded.size(); j++) {
-//                    JSONObject json = allPackageListDiscarded.get(j).toJSON();
-//                    System.out.println(json.toString());
-////                    System.out.println(allPackageList.get(j));
-//                }
-                System.out.println("Local = " + localPackageList.size());
-
-//                for (int j = 0; j < localPackageList.size(); j++) {
-//                    System.out.println(localPackageList.get(j));
-//                }
                 if (!allPackageList.isEmpty() && i != 0) {
                     unMaintablePackageList.addAll(packageListCalculation.getDiffenceInArrayDiscarded(allPackageList, localPackageList, allPackageListDiscarded,
                             localPackageListDiscarded, releases.get(i - 1)));
@@ -122,20 +94,22 @@ public class PackageParser {
                 allPackageList = addLocalPackageToAllPackageList(allPackageList, localPackageList);
 
 //                unMaintablePackageList = packageListCalculation.getDiffenceInArray(packageListDiscarded,);
-                System.out.println("UnMaintainable = " + unMaintablePackageList.size());
+//                System.out.println("UnMaintainable = " + unMaintablePackageList.size());
 
 
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
         }
-
-        for (DiscardedPackage discardedPackage : unMaintablePackageList) {
-            JSONObject json = discardedPackage.toJSON();
-            System.out.println(json.toString());
-
+        if (releases.size() != 0) {
+            try {
+                releaseParser.checkoutRelease(releases.get(releases.size() - 1));
+            } catch (GitAPIException e) {
+                e.printStackTrace();
+            }
         }
+
 
         ArrayList<DiscardedPackage> finalUnmaintablePackageList = new ArrayList<DiscardedPackage>();
 
@@ -149,11 +123,12 @@ public class PackageParser {
         }
         System.out.println("\n\nFinal UnMaintainable = " + finalUnmaintablePackageList.size());
 
-        for (DiscardedPackage discardedPackage : finalUnmaintablePackageList) {
-            JSONObject json = discardedPackage.toJSON();
-            System.out.println(json.toString());
+//        for (DiscardedPackage discardedPackage : finalUnmaintablePackageList) {
+//            JSONObject json = discardedPackage.toJSON();
+//            System.out.println(json.toString());
+//
+//        }
 
-        }
-
+        return finalUnmaintablePackageList;
     }
 }

@@ -13,8 +13,7 @@ public class DiscardedPackage {
     private int versionLength = 0;
 
 
-
-    public DiscardedPackage(String packageName,String packagePath ,String lifetime, List<Map<String, Double>> previousReleaseMetices) {
+    public DiscardedPackage(String packageName, String packagePath, String lifetime, List<Map<String, Double>> previousReleaseMetices) {
         this.packageName = packageName;
         this.packagePath = packagePath;
         this.lifetime = lifetime;
@@ -24,6 +23,7 @@ public class DiscardedPackage {
     public int getVersionLength() {
         return versionLength;
     }
+
     public void setVersionLength(int versionLength) {
         this.versionLength = versionLength;
     }
@@ -35,6 +35,7 @@ public class DiscardedPackage {
     public void setPackagePath(String packagePath) {
         this.packagePath = packagePath;
     }
+
     public String getPackageName() {
         return packageName;
     }
@@ -42,7 +43,8 @@ public class DiscardedPackage {
     public String getLifetime() {
         return lifetime;
     }
-    public void setLifetime(String lifetime){
+
+    public void setLifetime(String lifetime) {
         this.lifetime = lifetime;
     }
 
@@ -50,7 +52,7 @@ public class DiscardedPackage {
         return previousReleaseMetices;
     }
 
-    public JSONObject toJSON(){
+    public JSONObject toJSON() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.append("package_name", this.packageName);
         jsonObject.append("package_path", this.packagePath);

@@ -1,9 +1,11 @@
 package git;
 
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.TransportException;
+import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.json.JSONArray;
@@ -20,9 +22,8 @@ import java.util.List;
 
 public class ReleaseParser {
     private final Git git;
-    PackageParser packageParser = new PackageParser();
-    List<String> releases = new ArrayList<>();
-    public ReleaseParser(String projectPath) throws  IOException{
+
+    public ReleaseParser(String projectPath) throws IOException {
         FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
         Repository repository = repositoryBuilder.setGitDir(new File(projectPath + "/.git"))
                 .readEnvironment() // scan environment GIT_* variables
@@ -30,12 +31,12 @@ public class ReleaseParser {
                 .setMustExist(true)
                 .build();
 
-         this.git = new Git(repository);
+        this.git = new Git(repository);
     }
 
     public List<String> parseReleaseHistory(String gitApiReleasesURL) throws InvalidRemoteException, TransportException, GitAPIException, IOException {
 
-        List<String>releases = new ArrayList<>();
+        List<String> releases = new ArrayList<>();
 
 
         var request = HttpRequest.newBuilder().GET().uri(URI.create(gitApiReleasesURL)).build();
@@ -57,10 +58,11 @@ public class ReleaseParser {
     }
 
     public void checkoutRelease(String release) throws GitAPIException {
+        git.reset().setMode(ResetCommand.ResetType.HARD).setRef(Constants.HEAD);
         git.checkout()
                 .setCreateBranch(false)
                 .setName(release)
-                .setStartPoint("refs/tags/"+release)
+                .setStartPoint("refs/tags/" + release)
                 .call();
     }
 }

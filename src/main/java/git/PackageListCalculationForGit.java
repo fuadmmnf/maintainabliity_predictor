@@ -56,12 +56,12 @@ public class PackageListCalculationForGit {
                         // System.out.println("File= " + folder.getAbsolutePath()+ "\\" +
                         // fileEntry.getName());
 
-                        String fileName = folder.getAbsolutePath() + "\\" + fileEntry.getName();
+                        String fileName = folder.getAbsolutePath() + File.separator + fileEntry.getName();
                         String path = folder.getAbsolutePath();
 //						System.out.println(path);
 
                         try {
-                            if (folder.getParent().contains("\\src\\") && !folder.getParent().contains("\\test\\")) {
+                            if (folder.getParent().contains(File.separator + "src" + File.separator) && !folder.getParent().contains(File.separator + "test" + File.separator)) {
                                 chooseFile(fileName,path, packageList);
                             }
 
@@ -93,11 +93,11 @@ public class PackageListCalculationForGit {
 
             String currentLine = st;
             currentLine = currentLine.trim();
-            String merger = "";
+            StringBuilder merger = new StringBuilder();
             if (currentLine.contains("package")) {
-                merger = currentLine;
+                merger = new StringBuilder(currentLine);
                 String stTemp = st;
-                for (; st != null; ) {
+                while (st != null) {
                     // for ( ;(st = br.readLine()) != null; ) {
 
                     st = st.trim();
@@ -117,7 +117,7 @@ public class PackageListCalculationForGit {
 
                         break;
                     }
-                    merger = merger + st;
+                    merger.append(st);
 
                     lineNumber++;
                     if (stTemp.contains(";")) {
@@ -131,7 +131,7 @@ public class PackageListCalculationForGit {
                     stTemp = st;
 
                 }
-                if (fileShow == true) {
+                if (fileShow) {
                     break;
                 }
                 /*
@@ -144,7 +144,7 @@ public class PackageListCalculationForGit {
 
         }
         br.close();
-        if (fileShow == true) {
+        if (fileShow) {
 //			System.out.println(fileName  + "   done!!!!!!!!!!!");
         }
 
@@ -153,9 +153,9 @@ public class PackageListCalculationForGit {
     public ArrayList<String> getDiffenceInArray(ArrayList<String> previousVersionPackageList, ArrayList<String> nextVersionPackageList) {
         ArrayList<String> result = new ArrayList<String>();
 
-        for (int i = 0; i < previousVersionPackageList.size(); i++) {
-            if (!nextVersionPackageList.contains(previousVersionPackageList.get(i))) {
-                result.add(previousVersionPackageList.get(i));
+        for (String s : previousVersionPackageList) {
+            if (!nextVersionPackageList.contains(s)) {
+                result.add(s);
             }
         }
 
