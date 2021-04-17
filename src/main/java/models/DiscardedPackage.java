@@ -64,9 +64,9 @@ public class DiscardedPackage {
 
     public boolean isAvailaleInRelease(String release) {
         String[] releaseterminals = this.lifetime.split("_");
-        release = release.replaceAll("v", "");
-        String firstRelease = releaseterminals[0].replaceAll("v", "");
-        String lastRelease = releaseterminals[releaseterminals.length - 1].replaceAll("v", "");
+        release = release.replaceFirst("v", "");
+        String firstRelease = releaseterminals[0].replaceFirst("v", "");
+        String lastRelease = releaseterminals[releaseterminals.length - 1].replaceFirst("v", "");
 
         return (release.charAt(0) >= firstRelease.charAt(0) && release.charAt(2) >= firstRelease.charAt(2) && release.charAt(4) >= firstRelease.charAt(4)) &&
                 (release.charAt(0) <= lastRelease.charAt(0) && release.charAt(2) <= lastRelease.charAt(2) && release.charAt(4) <= lastRelease.charAt(4));
