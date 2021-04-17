@@ -26,8 +26,8 @@ public class PackageParser {
         return packageListDiscarded;
     }
 
-    private ArrayList<String> addLocalPackageToAllPackageList(ArrayList<String> localPackageList) {
-        ArrayList<String> allPackageList = new ArrayList<String>();
+    private ArrayList<String> addLocalPackageToAllPackageList(
+            ArrayList<String> allPackageList,ArrayList<String> localPackageList) {
         for (int i = 0; i < allPackageList.size(); i++) {
             if(!localPackageList.contains(allPackageList.get(i))){
                 allPackageList.remove(i);
@@ -40,6 +40,28 @@ public class PackageParser {
             }
         }
         return allPackageList;
+    }
+
+    private ArrayList<DiscardedPackage> addLocalPackageToAllPackageListDiscarded(
+            ArrayList<String> allPackageList,
+            ArrayList<String> localPackageList,
+            ArrayList<DiscardedPackage> allPackageListDiscarded,
+            ArrayList<DiscardedPackage> localPackageListDiscarded
+    ) {
+        for (int i = 0; i < allPackageList.size(); i++) {
+            if(!localPackageList.contains(allPackageList.get(i))){
+                allPackageList.remove(i);
+                allPackageListDiscarded.remove(i);
+            }
+//            allPackageList.add(localPackageList.get(i));
+        }
+        for (int i = 0; i < localPackageList.size(); i++) {
+            if(!allPackageList.contains(localPackageList.get(i))){
+                allPackageList.add(localPackageList.get(i));
+                allPackageListDiscarded.add(localPackageListDiscarded.get(i));
+            }
+        }
+        return allPackageListDiscarded;
     }
 
     public void parsePackage(List<String> releases, Git git) throws GitAPIException {
@@ -83,8 +105,10 @@ public class PackageParser {
 
                 System.out.println("All package = " + allPackageList.size());
 
-//                for (int j = 0; j < allPackageList.size(); j++) {
-//                    System.out.println(allPackageList.get(j));
+//                for (int j = 0; j < allPackageListDiscarded.size(); j++) {
+//                    JSONObject json = allPackageListDiscarded.get(j).toJSON();
+//                    System.out.println(json.toString());
+////                    System.out.println(allPackageList.get(j));
 //                }
                 System.out.println("Local = " + localPackageList.size());
 
@@ -95,8 +119,10 @@ public class PackageParser {
                     unMaintablePackageList.addAll(packageListCalculation.getDiffenceInArrayDiscarded(allPackageList,localPackageList,allPackageListDiscarded,
                             localPackageListDiscarded,releases.get(i-1)));
                 }
-                allPackageList = addLocalPackageToAllPackageList(localPackageList);
-                allPackageListDiscarded = arrayStringToDiscardedArray(releases.get(i), allPackageList);
+                allPackageListDiscarded = addLocalPackageToAllPackageListDiscarded(allPackageList,localPackageList,
+                        allPackageListDiscarded,localPackageListDiscarded);
+                allPackageList = addLocalPackageToAllPackageList(allPackageList,localPackageList);
+
 //                unMaintablePackageList = packageListCalculation.getDiffenceInArray(packageListDiscarded,);
                 System.out.println("UnMaintainable = " + unMaintablePackageList.size());
 
