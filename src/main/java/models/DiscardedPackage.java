@@ -62,4 +62,12 @@ public class DiscardedPackage {
         return jsonObject;
     }
 
+    public boolean isAvailaleInRelease(String release) {
+        String[] releaseterminals = this.lifetime.split("_");
+        String firstRelease = releaseterminals[0];
+        String lastRelease = releaseterminals[releaseterminals.length - 1];
+
+        return (release.charAt(1) >= firstRelease.charAt(1) && release.charAt(3) >= firstRelease.charAt(3) && release.charAt(5) >= firstRelease.charAt(5)) &&
+                (release.charAt(1) <= lastRelease.charAt(1) && release.charAt(3) <= lastRelease.charAt(3) && release.charAt(5) <= lastRelease.charAt(5));
+    }
 }
