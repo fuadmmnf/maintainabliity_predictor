@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class PackageListCalculationForGit {
 
@@ -30,8 +31,8 @@ public class PackageListCalculationForGit {
 
     public void printPackage(ArrayList<String> packageList) {
         System.out.println("\n\nPakage Array List --------------- \n");
-        for (int i = 0; i < packageList.size(); i++) {
-            System.out.println(packageList.get(i));
+        for (String s : packageList) {
+            System.out.println(s);
         }
     }
 
@@ -40,7 +41,7 @@ public class PackageListCalculationForGit {
     private void chooseFolder(final File folder, ArrayList<String> packageList) {
         String temp = "";
 
-        for (final File fileEntry : folder.listFiles()) {
+        for (final File fileEntry : Objects.requireNonNull(folder.listFiles())) {
             if (fileEntry.isDirectory()) {
 //				 System.out.println(fileEntry.getName());
 //				 System.out.println(folder.getName());
@@ -141,6 +142,7 @@ public class PackageListCalculationForGit {
             }
 
         }
+        br.close();
         if (fileShow == true) {
 //			System.out.println(fileName  + "   done!!!!!!!!!!!");
         }
@@ -160,20 +162,22 @@ public class PackageListCalculationForGit {
 
     }
 
-    public ArrayList<DiscardedPackage> getDiffenceInArrayDiscarded(ArrayList<DiscardedPackage> previousVersionPackageList,
-                                                                   ArrayList<DiscardedPackage> nextVersionPackageList,
+    public ArrayList<DiscardedPackage> getDiffenceInArrayDiscarded(ArrayList<String> allPackageList,
+                                                                   ArrayList<String> localPackageList,
+                                                                   ArrayList<DiscardedPackage> allPackageListDiscarded,
+                                                                   ArrayList<DiscardedPackage> localPackageListDiscarded,
                                                                    String lastVersion) {
         ArrayList<DiscardedPackage> result = new ArrayList<DiscardedPackage>();
 
-        for (int i = 0; i < previousVersionPackageList.size(); i++) {
-            if (!nextVersionPackageList.contains(previousVersionPackageList.get(i))) {
-                previousVersionPackageList.get(i).setLifetime(
-                        previousVersionPackageList.get(i).getLifetime() + "_" + lastVersion
+        for (int i = 0; i < allPackageList.size(); i++) {
+            if (!localPackageList.contains(allPackageList.get(i))) {
+                allPackageListDiscarded.get(i).setLifetime(
+                        allPackageListDiscarded.get(i).getLifetime() + "_" + lastVersion
                 );
-                result.add(previousVersionPackageList.get(i));
+                result.add(allPackageListDiscarded.get(i));
             }
             else{
-                previousVersionPackageList.get(i).setVersionLength(previousVersionPackageList.get(i).getVersionLength()+1);
+                allPackageListDiscarded.get(i).setVersionLength(allPackageListDiscarded.get(i).getVersionLength()+1);
             }
         }
 

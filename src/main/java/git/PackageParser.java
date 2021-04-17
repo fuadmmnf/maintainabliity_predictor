@@ -2,6 +2,7 @@ package git;
 
 import models.DiscardedPackage;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.json.JSONObject;
 import pakage_checker.PackageListCalculation;
@@ -54,14 +55,21 @@ public class PackageParser {
 
         for (int i = 0; i < releases.size(); i++) {
             System.out.println(releases.get(i));
-            System.out.println("Not safe!!");
+            System.out.println("\n\nNot safe!!");
+            git.reset().setMode(ResetCommand.ResetType.HARD).call();
             git.checkout()
                     .setCreateBranch(false)
                     .setName(releases.get(i))
                     .setStartPoint("refs/tags/" + releases.get(i))
                     .call();
 
+            System.out.println("Finish checkout!!");
             try {
+                System.out.println("\n\nSafe now!!!!!!!!");
+                Thread.sleep(5000);
+                System.out.println("Start Package calculation");
+
+//                Thread.sleep(1);
 //                String secondProjectFilePath = "F:\\IIT 8th Semester\\Software Metrics\\elastisearch\\mybatis\\mybatis-3";
 //                String firstProjectFilePath = "F:\\IIT 8th Semester\\Software Metrics\\elastisearch\\mybatis\\mybatis-3 - Copy";
 
@@ -74,18 +82,25 @@ public class PackageParser {
                 localPackageListDiscarded = arrayStringToDiscardedArray(releases.get(i), localPackageList);
 
                 System.out.println("All = " + allPackageList.size());
+
+//                for (int j = 0; j < allPackageList.size(); j++) {
+//                    System.out.println(allPackageList.get(j));
+//                }
                 System.out.println("Local = " + localPackageList.size());
-                if (!allPackageList.isEmpty()) {
-                    unMaintablePackageList = packageListCalculation.getDiffenceInArrayDiscarded(allPackageListDiscarded,
-                            localPackageListDiscarded,releases.get(i-1));
+
+//                for (int j = 0; j < localPackageList.size(); j++) {
+//                    System.out.println(localPackageList.get(j));
+//                }
+                if (!allPackageList.isEmpty() && i!=0) {
+                    unMaintablePackageList.addAll(packageListCalculation.getDiffenceInArrayDiscarded(allPackageList,localPackageList,allPackageListDiscarded,
+                            localPackageListDiscarded,releases.get(i-1)));
                 }
                 allPackageList = addLocalPackageToAllPackageList(localPackageList);
                 allPackageListDiscarded = arrayStringToDiscardedArray(releases.get(i), allPackageList);
 //                unMaintablePackageList = packageListCalculation.getDiffenceInArray(packageListDiscarded,);
                 System.out.println("UnMaintainable = " + unMaintablePackageList.size());
 
-                System.out.println("\n\nSafe now!!!!!!!!");
-                Thread.sleep(10000);
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

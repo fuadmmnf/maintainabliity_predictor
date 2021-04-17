@@ -57,7 +57,7 @@ public class PackageListCalculation {
 //						System.out.println(path);
 
 						try {
-							if (folder.getParent().contains("src") && !folder.getParent().contains("test")) {
+							if (folder.getParent().contains("\\src\\") && !folder.getParent().contains("\\test\\")) {
 								chooseFile(path,packageList);
 							}
 
