@@ -20,6 +20,8 @@ import java.util.List;
 
 public class ReleaseParser {
     private final Git git;
+    PackageParser packageParser = new PackageParser();
+    List<String> releases = new ArrayList<>();
     public ReleaseParser(String projectPath) throws  IOException{
         FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
         Repository repository = repositoryBuilder.setGitDir(new File(projectPath + "/.git"))
@@ -43,7 +45,7 @@ public class ReleaseParser {
             JSONArray jsArray = new JSONArray(response.body());
 
 
-            for (int i= jsArray.length()-1; i>=0; i--){
+            for (int i = jsArray.length() - 1; i >= 0; i--) {
                 JSONObject jsonObject = jsArray.getJSONObject(i);
                 releases.add(jsonObject.get("tag_name").toString());
             }

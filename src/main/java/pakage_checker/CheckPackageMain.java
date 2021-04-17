@@ -11,8 +11,8 @@ public class CheckPackageMain {
 
 	
 	public static void main(String[] args) {
-		String firstProjectFilePath = "F:\\IIT 8th Semester\\Software Metrics\\elastisearch\\librarydx\\ck";
-		String secondProjectFilePath = "F:\\IIT 8th Semester\\Software Metrics\\elastisearch\\librarydx\\ck - Copy";
+		String secondProjectFilePath = "F:\\IIT 8th Semester\\Software Metrics\\elastisearch\\mybatis\\mybatis-3";
+		String firstProjectFilePath = "F:\\IIT 8th Semester\\Software Metrics\\elastisearch\\mybatis\\mybatis-3 - Copy";
 
 		PackageListCalculation packageListCalculation = new PackageListCalculation();
 		ArrayList <String> packageList1 = new ArrayList<String>();
@@ -20,9 +20,12 @@ public class CheckPackageMain {
 		packageList1 = packageListCalculation.getPackageList(firstProjectFilePath);
 		packageList2 = packageListCalculation.getPackageList(secondProjectFilePath);
 
+		System.out.println("First = " + packageList1.size());
+		System.out.println("Second = " + packageList2.size());
 		ArrayList <String> unMaintablePackageList = new ArrayList<String>();
 		unMaintablePackageList = packageListCalculation.getDiffenceInArray(packageList1, packageList2);
-		packageListCalculation.printPackage(unMaintablePackageList);
+		System.out.println("Last = " + unMaintablePackageList.size());
+//		packageListCalculation.printPackage(unMaintablePackageList);
 		
 	}
 }
