@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import pakage_checker.PackageListCalculation;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -30,12 +31,26 @@ public class PackageParser {
 
     private ArrayList<String> addLocalPackageToAllPackageList(
             ArrayList<String> allPackageList,ArrayList<String> localPackageList) {
-        for (int i = 0; i < allPackageList.size(); i++) {
-            if(!localPackageList.contains(allPackageList.get(i))){
-                allPackageList.remove(i);
+
+        Iterator<String> iterator = allPackageList.iterator();
+        while (iterator.hasNext()) {
+            String packageName =iterator.next();
+            if(!localPackageList.contains(packageName)){
+                iterator.remove();
             }
-//            allPackageList.add(localPackageList.get(i));
         }
+
+//
+//        ArrayList<String> allPackageListCopy = new ArrayList<String>();
+//        allPackageListCopy.addAll(allPackageList);
+//        for (int i = 0; i < allPackageListCopy.size(); i++) {
+//            if(!localPackageList.contains(allPackageListCopy.get(i))){
+//                allPackageList.remove(i);
+//            }
+////            allPackageList.add(localPackageList.get(i));
+//        }
+
+
         for (int i = 0; i < localPackageList.size(); i++) {
             if(!allPackageList.contains(localPackageList.get(i))){
                 allPackageList.add(localPackageList.get(i));
@@ -50,13 +65,24 @@ public class PackageParser {
             ArrayList<DiscardedPackage> allPackageListDiscarded,
             ArrayList<DiscardedPackage> localPackageListDiscarded
     ) {
-        for (int i = 0; i < allPackageList.size(); i++) {
-            if(!localPackageList.contains(allPackageList.get(i))){
-                allPackageList.remove(i);
-                allPackageListDiscarded.remove(i);
+        Iterator<DiscardedPackage> iterator = allPackageListDiscarded.iterator();
+        while (iterator.hasNext()) {
+            DiscardedPackage discardedPackage = iterator.next(); // must be called before you can call i.remove()
+            String packageName = discardedPackage.getPackagePath() + "," +  discardedPackage.getPackageName();
+            if(!localPackageList.contains(packageName)){
+                iterator.remove();
             }
-//            allPackageList.add(localPackageList.get(i));
         }
+
+//        ArrayList<String> allPackageListCopy = new ArrayList<String>();
+//        allPackageListCopy.addAll(allPackageList);
+//        for (int i = 0; i < allPackageListCopy.size(); i++) {
+//            if(!localPackageList.contains(allPackageListCopy.get(i))){
+//                allPackageList.remove(i);
+//
+//            }
+////            allPackageList.add(localPackageList.get(i));
+//        }
         for (int i = 0; i < localPackageList.size(); i++) {
             if(!allPackageList.contains(localPackageList.get(i))){
                 allPackageList.add(localPackageList.get(i));
@@ -138,12 +164,20 @@ public class PackageParser {
 
         }
 
+        for (int i = 0; i < unMaintablePackageList.size(); i++) {
+            var split = unMaintablePackageList.get(i).getLifetime().split("_");
+            if(split.length >2){
+                JSONObject json = unMaintablePackageList.get(i).toJSON();
+                System.out.println(json.toString());
+            }
+        }
+
         ArrayList<DiscardedPackage> finalUnmaintablePackageList = new ArrayList<DiscardedPackage>();
 
         for (int i = 0; i < unMaintablePackageList.size(); i++) {
             if(
 //                    Integer.compare(unMaintablePackageList.get(i).getVersionLength(),3) != 1
-                  unMaintablePackageList.get(i).getVersionLength()>5
+                  unMaintablePackageList.get(i).getVersionLength()>3
             ){
                 finalUnmaintablePackageList.add( unMaintablePackageList.get(i));
             }
