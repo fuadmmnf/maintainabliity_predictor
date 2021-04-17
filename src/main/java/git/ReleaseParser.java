@@ -25,7 +25,7 @@ public class ReleaseParser {
 
     public ReleaseParser(String projectPath) throws IOException {
         FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
-        Repository repository = repositoryBuilder.setGitDir(new File(projectPath + "/.git"))
+        Repository repository = repositoryBuilder.setGitDir(new File(projectPath + File.separator + ".git"))
                 .readEnvironment() // scan environment GIT_* variables
                 .findGitDir() // scan up the file system tree
                 .setMustExist(true)
@@ -58,7 +58,7 @@ public class ReleaseParser {
     }
 
     public void checkoutRelease(String release) throws GitAPIException {
-        git.reset().setMode(ResetCommand.ResetType.HARD).setRef(Constants.HEAD);
+//        git.reset().setMode(ResetCommand.ResetType.HARD).setRef(Constants.HEAD);
         git.checkout()
                 .setCreateBranch(false)
                 .setName(release)

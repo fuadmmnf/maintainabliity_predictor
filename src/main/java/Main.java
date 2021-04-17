@@ -5,6 +5,7 @@ import metrics.MetricsRunner;
 import models.DiscardedPackage;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,11 +17,11 @@ import java.util.stream.StreamSupport;
 
 public class Main {
     public static void main(String[] args) {
-        String projectName = "seata";
-        String projectOwner = "seata";
+        String projectName = "RxJava";
+        String projectOwner = "ReactiveX";
 
-        String projectPath = "src/main/resources/gitprojects/" + projectName;
-        String datasetPath = "src/main/resources/dataset/" + projectName;
+        String projectPath = "src/main/resources/gitprojects/".replaceAll("/", File.separator) + projectName;
+        String datasetPath = "src/main/resources/dataset/".replaceAll("/", File.separator) + projectName;
         PackageParser packageParser = new PackageParser();
         try {
 
