@@ -81,7 +81,7 @@ public class PackageParser {
                 localPackageList = packageListCalculation.getPackageList(ProjectConstants.PATH);
                 localPackageListDiscarded = arrayStringToDiscardedArray(releases.get(i), localPackageList);
 
-                System.out.println("All = " + allPackageList.size());
+                System.out.println("All package = " + allPackageList.size());
 
 //                for (int j = 0; j < allPackageList.size(); j++) {
 //                    System.out.println(allPackageList.get(j));
