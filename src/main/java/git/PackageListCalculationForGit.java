@@ -56,12 +56,13 @@ public class PackageListCalculationForGit {
                         // System.out.println("File= " + folder.getAbsolutePath()+ "\\" +
                         // fileEntry.getName());
 
-                        String path = folder.getAbsolutePath() + "\\" + fileEntry.getName();
+                        String fileName = folder.getAbsolutePath() + "\\" + fileEntry.getName();
+                        String path = folder.getAbsolutePath();
 //						System.out.println(path);
 
                         try {
-                            if (folder.getParent().contains("src") && !folder.getParent().contains("test")) {
-                                chooseFile(path, packageList);
+                            if (folder.getParent().contains("\\src\\") && !folder.getParent().contains("\\test\\")) {
+                                chooseFile(fileName,path, packageList);
                             }
 
                         } catch (IOException e) {
@@ -77,7 +78,7 @@ public class PackageListCalculationForGit {
         }
     }
 
-    private void chooseFile(String fileName, ArrayList<String> packageList) throws IOException {
+    private void chooseFile(String fileName, String path,ArrayList<String> packageList) throws IOException {
 
         File file = new File(fileName);
 
@@ -109,8 +110,8 @@ public class PackageListCalculationForGit {
                         result = result.replace("package", "").replace(";", "").trim();
 //						 System.out.println(result);
 
-                        if (!packageList.contains(result)) {
-                            packageList.add(result);
+                        if (!packageList.contains(path + "," + result)) {
+                            packageList.add(path + "," + result);
                         }
                         fileShow = true;
 
@@ -175,6 +176,7 @@ public class PackageListCalculationForGit {
                         allPackageListDiscarded.get(i).getLifetime() + "_" + lastVersion
                 );
                 result.add(allPackageListDiscarded.get(i));
+
             }
             else{
                 allPackageListDiscarded.get(i).setVersionLength(allPackageListDiscarded.get(i).getVersionLength()+1);
@@ -182,6 +184,32 @@ public class PackageListCalculationForGit {
         }
 
         return result;
+
+//        All package = 54
+//        Local = 54
+//        UnMaintainable = 12
+//        {"package_name":["org.apache.ibatis.scripting.defaults"],"lifetime":["mybatis-3.2.0_mybatis-3.2.0"],"length":[0],"metrics":[[]]}
+//        {"package_name":["org.apache.ibatis.scripting"],"lifetime":["mybatis-3.2.0_mybatis-3.2.0"],"length":[28],"metrics":[[]]}
+//        {"package_name":["org.apache.ibatis.scripting.xmltags"],"lifetime":["mybatis-3.2.0_mybatis-3.2.0"],"length":[0],"metrics":[[]]}
+//        {"package_name":["org.apache.ibatis"],"lifetime":["mybatis-3.2.0_mybatis-3.1.0"],"length":[2],"metrics":[[]]}
+//        {"package_name":["org.apache.ibatis.migration.commands"],"lifetime":["mybatis-3.0.1_mybatis-3.0.1"],"length":[0],"metrics":[[]]}
+//        {"package_name":["org.apache.ibatis.ognl"],"lifetime":["mybatis-3.0.1_mybatis-3.0.3"],"length":[1],"metrics":[[]]}
+//        {"package_name":["org.apache.ibatis.type"],"lifetime":["mybatis-3.2.0_mybatis-3.0.4"],"length":[8],"metrics":[[]]}
+//        {"package_name":["org.apache.ibatis.builder.xml.dynamic"],"lifetime":["mybatis-3.1.1_mybatis-3.0.4_mybatis-3.2.4"],"length":[5],"metrics":[[]]}
+//        {"package_name":["org.apache.ibatis.migration"],"lifetime":["mybatis-3.0.1_mybatis-3.0.4"],"length":[5],"metrics":[[]]}
+//        {"package_name":["org.apache.ibatis.ognl"],"lifetime":["mybatis-3.0.2_mybatis-3.0.4"],"length":[20],"metrics":[[]]}
+//        {"package_name":["org.apache.ibatis.builder.xml.dynamic"],"lifetime":["mybatis-3.1.1_mybatis-3.0.4_mybatis-3.2.4"],"length":[5],"metrics":[[]]}
+//        {"package_name":["org.apache.ibatis.metadata"],"lifetime":["mybatis-3.2.0_mybatis-3.2.5"],"length":[10],"metrics":[[]]}
+
+
+//        All package = 54
+//        Local = 54
+//        UnMaintainable = 5
+//        {"package_name":["org.apache.ibatis.type"],"lifetime":["mybatis-3.2.0_mybatis-3.0.4"],"length":[8],"metrics":[[]]}
+//        {"package_name":["org.apache.ibatis.builder.xml.dynamic"],"lifetime":["mybatis-3.1.1_mybatis-3.0.4_mybatis-3.2.4"],"length":[5],"metrics":[[]]}
+//        {"package_name":["org.apache.ibatis.migration"],"lifetime":["mybatis-3.0.1_mybatis-3.0.4"],"length":[5],"metrics":[[]]}
+//        {"package_name":["org.apache.ibatis.builder.xml.dynamic"],"lifetime":["mybatis-3.1.1_mybatis-3.0.4_mybatis-3.2.4"],"length":[5],"metrics":[[]]}
+//        {"package_name":["org.apache.ibatis.metadata"],"lifetime":["mybatis-3.2.0_mybatis-3.2.5"],"length":[10],"metrics":[[]]}
 
     }
 }

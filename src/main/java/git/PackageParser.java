@@ -16,10 +16,12 @@ public class PackageParser {
     private ArrayList<DiscardedPackage> arrayStringToDiscardedArray(String version, ArrayList<String> packageListString) {
         ArrayList<DiscardedPackage> packageListDiscarded = new ArrayList<DiscardedPackage>();
         for (int i = 0; i < packageListString.size(); i++) {
-            String packageName = packageListString.get(i);
+            var split =  packageListString.get(i).split(",");
+            String packageName = split[1];
+            String packagePath = split[0];
             String lifetime = version;
             List<Map<String, Double>> previousReleaseMetices = new ArrayList<Map<String, Double>>();
-            DiscardedPackage discardedPackage = new DiscardedPackage(packageName, lifetime, previousReleaseMetices);
+            DiscardedPackage discardedPackage = new DiscardedPackage(packageName, packagePath,lifetime, previousReleaseMetices);
             packageListDiscarded.add(discardedPackage);
         }
 
@@ -70,10 +72,6 @@ public class PackageParser {
         ArrayList<DiscardedPackage> unMaintablePackageList = new ArrayList<DiscardedPackage>();
         ArrayList<String> allPackageList = new ArrayList<String>();
         ArrayList<DiscardedPackage> allPackageListDiscarded = new ArrayList<DiscardedPackage>();
-        String packageName = "";
-        String lifetime = "";
-        List<Map<String, Double>> previousReleaseMetices = new ArrayList<Map<String, Double>>();
-        DiscardedPackage discardedPackage = new DiscardedPackage(packageName, lifetime, previousReleaseMetices);
 
         for (int i = 0; i < releases.size(); i++) {
             System.out.println(releases.get(i));
@@ -88,7 +86,8 @@ public class PackageParser {
             System.out.println("Finish checkout!!");
             try {
                 System.out.println("\n\nSafe now!!!!!!!!");
-                Thread.sleep(5000);
+//                Thread.sleep(5000);
+                Thread.sleep(1);
                 System.out.println("Start Package calculation");
 
 //                Thread.sleep(1);
@@ -135,6 +134,24 @@ public class PackageParser {
 
         for (int i = 0; i < unMaintablePackageList.size(); i++) {
             JSONObject json = unMaintablePackageList.get(i).toJSON();
+            System.out.println(json.toString());
+
+        }
+
+        ArrayList<DiscardedPackage> finalUnmaintablePackageList = new ArrayList<DiscardedPackage>();
+
+        for (int i = 0; i < unMaintablePackageList.size(); i++) {
+            if(
+//                    Integer.compare(unMaintablePackageList.get(i).getVersionLength(),3) != 1
+                  unMaintablePackageList.get(i).getVersionLength()>5
+            ){
+                finalUnmaintablePackageList.add( unMaintablePackageList.get(i));
+            }
+        }
+        System.out.println("\n\nFinal UnMaintainable = " + finalUnmaintablePackageList.size());
+
+        for (int i = 0; i < finalUnmaintablePackageList.size(); i++) {
+            JSONObject json = finalUnmaintablePackageList.get(i).toJSON();
             System.out.println(json.toString());
 
         }

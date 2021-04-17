@@ -36,7 +36,8 @@ public class ReleaseParser {
 
 //        var api =  "https://api.github.com/repositories/189011689/releases";
 //        var api =  "https://api.github.com/repos/elastic/elasticsearch/releases";
-        var api = "https://api.github.com/repos/mybatis/mybatis-3/releases";
+//        var api = "https://api.github.com/repos/mybatis/mybatis-3/releases";
+        var api = "https://api.github.com/repos/seata/seata/releases";
         var request = HttpRequest.newBuilder().GET().uri(URI.create(api)).build();
         var client = HttpClient.newBuilder().build();
         try {
