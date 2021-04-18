@@ -148,6 +148,16 @@ public class PackageParser {
                         allPackageListDiscarded,localPackageListDiscarded);
                 allPackageList = addLocalPackageToAllPackageList(allPackageList,localPackageList);
 
+                if(i == releases.size()-1){
+                    System.out.println("Last Release!");
+
+                    for(int j = 0 ; j<allPackageListDiscarded.size() ; j++){
+                        allPackageListDiscarded.get(j).setLifetime(
+                                allPackageListDiscarded.get(j).getLifetime() + "_" + releases.get(i)
+                        );
+                    }
+                }
+
 //                unMaintablePackageList = packageListCalculation.getDiffenceInArray(packageListDiscarded,);
                 System.out.println("UnMaintainable = " + unMaintablePackageList.size());
 
@@ -158,11 +168,22 @@ public class PackageParser {
 
         }
 
-        for (int i = 0; i < unMaintablePackageList.size(); i++) {
-            JSONObject json = unMaintablePackageList.get(i).toJSON();
-            System.out.println(json.toString());
+        System.out.println("All package = " + allPackageListDiscarded.size());
 
-        }
+//        for (int i = 0; i < allPackageListDiscarded.size(); i++) {
+//            JSONObject json = allPackageListDiscarded.get(i).toJSON();
+//            System.out.println(json.toString());
+//
+//        }
+
+
+//        for (int i = 0; i < unMaintablePackageList.size(); i++) {
+//            JSONObject json = unMaintablePackageList.get(i).toJSON();
+//            System.out.println(json.toString());
+//
+//        }
+
+        System.out.println("\n\nProblem packages ----- " );
 
         for (int i = 0; i < unMaintablePackageList.size(); i++) {
             var split = unMaintablePackageList.get(i).getLifetime().split("_");
@@ -172,23 +193,22 @@ public class PackageParser {
             }
         }
 
-        ArrayList<DiscardedPackage> finalUnmaintablePackageList = new ArrayList<DiscardedPackage>();
+        ArrayList<DiscardedPackage> finalUnmaintainablePackageList = new ArrayList<DiscardedPackage>();
 
         for (int i = 0; i < unMaintablePackageList.size(); i++) {
             if(
 //                    Integer.compare(unMaintablePackageList.get(i).getVersionLength(),3) != 1
                   unMaintablePackageList.get(i).getVersionLength()>3
             ){
-                finalUnmaintablePackageList.add( unMaintablePackageList.get(i));
+                finalUnmaintainablePackageList.add( unMaintablePackageList.get(i));
             }
         }
-        System.out.println("\n\nFinal UnMaintainable = " + finalUnmaintablePackageList.size());
+        System.out.println("\n\nFinal UnMaintainable = " + finalUnmaintainablePackageList.size());
 
-        for (int i = 0; i < finalUnmaintablePackageList.size(); i++) {
-            JSONObject json = finalUnmaintablePackageList.get(i).toJSON();
-            System.out.println(json.toString());
-
-        }
+//        for (int i = 0; i < finalUnmaintainablePackageList.size(); i++) {
+//            JSONObject json = finalUnmaintainablePackageList.get(i).toJSON();
+//            System.out.println(json.toString());
+//        }
 
     }
 }
