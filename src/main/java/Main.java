@@ -1,24 +1,19 @@
 import git.PackageParser;
 import git.ReleaseParser;
 import metrics.DatasetGenerator;
-import metrics.MetricsRunner;
 import models.DiscardedPackage;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 public class Main {
     public static void main(String[] args) {
-        String projectName = "RxJava";
-        String projectOwner = "ReactiveX";
+        String projectName = "spring-framework";
+        String projectOwner = "spring-projects";
 
         String projectPath = "src/main/resources/gitprojects/".replaceAll("/", File.separator) + projectName;
         String datasetPath = "src/main/resources/dataset/".replaceAll("/", File.separator) + projectName;
