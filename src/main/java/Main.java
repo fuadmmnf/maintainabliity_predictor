@@ -12,8 +12,8 @@ import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args) {
-        String projectName = "hibernate-orm";
-        String projectOwner = "hibernate";
+        String projectName = "libgdx";
+        String projectOwner = "libgdx";
 
         String projectPath = "src/main/resources/gitprojects/".replaceAll("/", File.separator) + projectName;
         String datasetPath = "src/main/resources/dataset/".replaceAll("/", File.separator) + projectName;

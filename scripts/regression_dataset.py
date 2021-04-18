@@ -20,19 +20,19 @@ for dir, subdirs, files in os.walk(dir):
                         'package_name': filepath.split('/')[-2],
                         'release': filepath.split('/')[-3],
                         'cbo': df['cbo'].mean(),
+                        'nosi': df['nosi'].mean(),
+                        'loc': df['loc'].mean(),
                         'wmc': df['wmc'].mean(),
-                        'dit': df['dit'].mean(),
                         'rfc': df['rfc'].mean(),
                         'lcom': df['lcom'].mean(),
                         'tcc': df['tcc'].mean(),
                         'lcc': df['lcc'].mean(),
-                        'nosi': df['nosi'].mean(),
-                        'loc': df['loc'].mean(),
+                        'dit': df['dit'].mean(),
                     })
 
 import csv
 with open('regression_dataset.csv', 'w') as f:
-    fieldnames = ['package_name', 'release', 'cbo', 'wmc', 'dit', 'rfc', 'lcom', 'tcc', 'lcc', 'nosi', 'loc']
+    fieldnames = ['package_name', 'release', 'cbo', 'nosi', 'loc', 'wmc', 'rfc', 'lcom', 'tcc', 'lcc',  'dit']
     writer = csv.DictWriter(f, fieldnames=fieldnames)
     writer.writeheader()
     writer.writerows(d for d in package_rows)

@@ -7,4 +7,3 @@ src/main/resources/dataset/**
 maintainability_predictor.iml
 .settings
 scripts/.idea
-scripts/*.csv
