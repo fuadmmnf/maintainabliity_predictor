@@ -74,7 +74,7 @@ public class PackageParser {
 
         for (int i = 0; i < releases.size(); i++) {
             try {
-                releaseParser.checkoutRelease(releases.get(i));
+                releaseParser.checkoutRelease(releases.get(i).split("~")[1]);
                 PackageListCalculationForGit packageListCalculation = new PackageListCalculationForGit();
 
 
@@ -104,7 +104,7 @@ public class PackageParser {
         }
         if (releases.size() != 0) {
             try {
-                releaseParser.checkoutRelease(releases.get(releases.size() - 1));
+                releaseParser.checkoutRelease(releases.get(releases.size() - 1).split("~")[1]);
             } catch (GitAPIException e) {
                 e.printStackTrace();
             }
@@ -116,7 +116,7 @@ public class PackageParser {
         for (DiscardedPackage discardedPackage : unMaintablePackageList) {
             if (
 //                    Integer.compare(unMaintablePackageList.get(i).getVersionLength(),3) != 1
-                    discardedPackage.getVersionLength() > 5
+                    discardedPackage.getVersionLength() > 3
             ) {
                 finalUnmaintablePackageList.add(discardedPackage);
             }

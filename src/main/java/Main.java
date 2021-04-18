@@ -12,8 +12,8 @@ import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args) {
-        String projectName = "seata";
-        String projectOwner = "seata";
+        String projectName = "hibernate-orm";
+        String projectOwner = "hibernate";
 
         String projectPath = "src/main/resources/gitprojects/".replaceAll("/", File.separator) + projectName;
         String datasetPath = "src/main/resources/dataset/".replaceAll("/", File.separator) + projectName;
@@ -30,7 +30,7 @@ public class Main {
 
             //calculate metrics by release
             for (String release : releases) {
-                releaseParser.checkoutRelease(release);
+                releaseParser.checkoutRelease(release.split("~")[1]);
                 //generate package to find metric in release
 //                for (DiscardedPackage discardedPackage : discardedPackages) {
 //                    if (discardedPackage.isAvailaleInRelease(release)) {
@@ -51,7 +51,7 @@ public class Main {
                 });
             }
             if (releases.size() != 0) {
-                releaseParser.checkoutRelease(releases.get(releases.size() - 1));
+                releaseParser.checkoutRelease(releases.get(releases.size() - 1).split("~")[1]);
             }
 
 

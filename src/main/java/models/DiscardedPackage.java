@@ -64,9 +64,9 @@ public class DiscardedPackage {
 
     public boolean isAvailaleInRelease(String release) {
         String[] releaseterminals = this.lifetime.split("_");
-        int releaseNum = Integer.parseInt(release.split("->")[0]);
-        int firstReleaseNum = Integer.parseInt(releaseterminals[0].split("->")[0]);
-        int lastReleaseNum = Integer.parseInt(releaseterminals[releaseterminals.length - 1].split("->")[0]);
-        return releaseNum >= firstReleaseNum && releaseNum <= lastReleaseNum;
+        int releaseNum = Integer.parseInt(release.split("~")[0]);
+        int firstReleaseNum = Integer.parseInt(releaseterminals[0].split("~")[0]);
+        int lastReleaseNum = Integer.parseInt(releaseterminals[releaseterminals.length - 1].split("~")[0]);
+        return releaseNum <= firstReleaseNum && releaseNum >= lastReleaseNum;
     }
 }
