@@ -6,3 +6,4 @@ src/main/resources/dataset/**
 .project
 maintainability_predictor.iml
 .settings
+scripts/.idea

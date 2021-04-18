@@ -12,8 +12,8 @@ import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args) {
-        String projectName = "spring-framework";
-        String projectOwner = "spring-projects";
+        String projectName = "seata";
+        String projectOwner = "seata";
 
         String projectPath = "src/main/resources/gitprojects/".replaceAll("/", File.separator) + projectName;
         String datasetPath = "src/main/resources/dataset/".replaceAll("/", File.separator) + projectName;
@@ -43,7 +43,7 @@ public class Main {
                 stream.forEach(discardedPackage -> {
                     if (discardedPackage.isAvailaleInRelease(release)) {
                         try {
-                            DatasetGenerator.calculateMetricsByDirectory(discardedPackage.getPackagePath(), datasetPath, release, discardedPackage.getPackageName().replaceAll("\\.", "_"));
+                            DatasetGenerator.calculateMetricsByDirectory(discardedPackage.getPackagePath(), datasetPath, release.replaceFirst("v", ""), discardedPackage.getPackageName().replaceAll("\\.", "_"));
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
