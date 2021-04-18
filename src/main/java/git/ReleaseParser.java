@@ -1,9 +1,11 @@
 package git;
 
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.TransportException;
+import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.json.JSONArray;
@@ -19,38 +21,48 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReleaseParser {
+    private final Git git;
 
-    public static void main(String[] args) throws InvalidRemoteException, TransportException, GitAPIException, IOException {
-
-        PackageParser packageParser = new PackageParser();
-        List<String>releases = new ArrayList<>();
-
+    public ReleaseParser(String projectPath) throws IOException {
         FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
-        Repository repository = repositoryBuilder.setGitDir(new File("H:\\Calculator\\PalmCalc\\.git"))
+        Repository repository = repositoryBuilder.setGitDir(new File(projectPath + File.separator + ".git"))
                 .readEnvironment() // scan environment GIT_* variables
                 .findGitDir() // scan up the file system tree
                 .setMustExist(true)
                 .build();
 
-        Git git = new Git(repository);
+        this.git = new Git(repository);
+    }
 
-        var api =  "https://api.github.com/repositories/189011689/releases";
-        var request = HttpRequest.newBuilder().GET().uri(URI.create(api)).build();
+    public List<String> parseReleaseHistory(String gitApiReleasesURL) throws InvalidRemoteException, TransportException, GitAPIException, IOException {
+
+        List<String> releases = new ArrayList<>();
+
+
+        var request = HttpRequest.newBuilder().GET().uri(URI.create(gitApiReleasesURL)).build();
         var client = HttpClient.newBuilder().build();
         try {
             var response = client.send(request, HttpResponse.BodyHandlers.ofString());
             JSONArray jsArray = new JSONArray(response.body());
 
 
-            for (int i= jsArray.length()-1; i>=0; i--){
+            for (int i = jsArray.length() - 1; i >= 0; i--) {
                 JSONObject jsonObject = jsArray.getJSONObject(i);
                 releases.add(jsonObject.get("tag_name").toString());
             }
-            packageParser.parsePackage(releases, git);
-
         } catch (IOException | InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        return releases;
+    }
+
+    public void checkoutRelease(String release) throws GitAPIException {
+//        git.reset().setMode(ResetCommand.ResetType.HARD).setRef(Constants.HEAD);
+        git.checkout()
+                .setCreateBranch(false)
+                .setName(release)
+                .setStartPoint("refs/tags/" + release)
+                .call();
     }
 }
