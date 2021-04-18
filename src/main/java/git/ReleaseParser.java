@@ -48,7 +48,7 @@ public class ReleaseParser {
 
             for (int i = jsArray.length() - 1; i >= 0; i--) {
                 JSONObject jsonObject = jsArray.getJSONObject(i);
-                releases.add(jsonObject.get("tag_name").toString());
+                releases.add(i + "->" + jsonObject.get("tag_name").toString());
             }
         } catch (IOException | InterruptedException e) {
             // TODO Auto-generated catch block
@@ -59,10 +59,11 @@ public class ReleaseParser {
 
     public void checkoutRelease(String release) throws GitAPIException {
 //        git.reset().setMode(ResetCommand.ResetType.HARD).setRef(Constants.HEAD);
+        String rel = (release.split("->"))[1];
         git.checkout()
                 .setCreateBranch(false)
                 .setName(release)
-                .setStartPoint("refs/tags/" + release)
+                .setStartPoint("refs/tags/" + rel)
                 .call();
     }
 }

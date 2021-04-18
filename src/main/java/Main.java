@@ -43,7 +43,7 @@ public class Main {
                 stream.forEach(discardedPackage -> {
                     if (discardedPackage.isAvailaleInRelease(release)) {
                         try {
-                            DatasetGenerator.calculateMetricsByDirectory(discardedPackage.getPackagePath(), datasetPath, release.replaceFirst("v", ""), discardedPackage.getPackageName().replaceAll("\\.", "_"));
+                            DatasetGenerator.calculateMetricsByDirectory(discardedPackage.getPackagePath(), datasetPath, release, discardedPackage.getPackageName().replaceAll("\\.", "_"));
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
