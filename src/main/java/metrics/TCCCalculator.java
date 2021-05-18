@@ -31,7 +31,7 @@ public class TCCCalculator {
                 if (matcher.matches()) {
                     // get the last group -> the fieldName
                     final String name = matcher.group(matcher.groupCount());
-                    System.out.println("FieldName: " + name);
+                    System.out.println("FieldName1: " + name);
                 }
             }
             super.visit(n, arg);
