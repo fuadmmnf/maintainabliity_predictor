@@ -7,25 +7,16 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
-import com.github.javaparser.ast.expr.ConditionalExpr;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.FieldAccessExpr;
-import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import org.apache.commons.lang3.StringUtils;
-import com.github.javaparser.ast.*;
-import org.eclipse.jdt.core.dom.InfixExpression;
-import org.eclipse.jdt.core.dom.ParenthesizedExpression;
-import org.eclipse.jdt.internal.compiler.ast.ConditionalExpression;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 public class WMCCalculator {
 
@@ -37,6 +28,8 @@ public class WMCCalculator {
     private static class ClassVisitor extends VoidVisitorAdapter<Void> {
         private final List<VariableDeclarator> attributes = new ArrayList<>();
         private Integer cycometricComplexity = 0;
+        Map<String, Integer> methodComplexityMap = new HashMap<>();
+        int totalCycometricComplexity = 0;
 
         private int getConditionalStatement(Node node) {
             int complexity = 0;
@@ -57,75 +50,68 @@ public class WMCCalculator {
             return complexity;
         }
 
-        private int increaseCCFromExpression(Node expression) {
-            if (expression == null) {
-                increaseCc();
-                return 0;
-            }
-
-            containsIfTenary(expression);
-//            if(!containsIfTenary(expression)) {
+//        private int increaseCCFromExpression(Node expression) {
+//            if (expression == null) {
 //                increaseCc();
+//                return 0;
 //            }
-
-            String expr = expression.toString().replace("&&", "&").replace("||", "|");
-            int ands = StringUtils.countMatches(expr, "&");
-            int ors = StringUtils.countMatches(expr, "|");
-
-            increaseCc(ands + ors);
-            return ands + ors;
-        }
-
-
-        private void containsIfTenary(Node expression) {
-
-            var childNodes = expression.getChildNodes();
-            int i = 0;
-            for (IfStmt ifStmt : expression.getChildNodesByType(IfStmt.class)) {
-                increaseCc();
-                containsIfTenary(childNodes.get(i));
-
-                i++;
-//                    System.out.println("\nchild Nodes: "+ i + "\n"  + ( childNodes.get(i)).toString());
-
-            }
-
-//            if(expression.get instanceof IfStmt ) {
-//                ParenthesizedExpression x = (ParenthesizedExpression) expression;
-//                return containsIfTenary(x.getExpression());
-//            } else if(expression instanceof InfixExpression) {
-//                InfixExpression x = (InfixExpression) expression;
-//                return containsIfTenary(x.getLeftOperand()) || containsIfTenary(x.getRightOperand());
-//            } else if (expression instanceof ConditionalExpression) {
-//                return true;
+//
+//            containsIfTenary(expression);
+////            if(!containsIfTenary(expression)) {
+////                increaseCc();
+////            }
+//
+//            String expr = expression.toString().replace("&&", "&").replace("||", "|");
+//            int ands = StringUtils.countMatches(expr, "&");
+//            int ors = StringUtils.countMatches(expr, "|");
+//
+//            increaseCc(ands + ors);
+//            return ands + ors;
+//        }
+//
+//
+//        private void containsIfTenary(Node expression) {
+//
+//            var childNodes = expression.getChildNodes();
+//            int i = 0;
+//            for (IfStmt ifStmt : expression.getChildNodesByType(IfStmt.class)) {
+//                increaseCc();
+//                containsIfTenary(childNodes.get(i));
+//
+//                i++;
+////                    System.out.println("\nchild Nodes: "+ i + "\n"  + ( childNodes.get(i)).toString());
+//
 //            }
+//
+////            if(expression.get instanceof IfStmt ) {
+////                ParenthesizedExpression x = (ParenthesizedExpression) expression;
+////                return containsIfTenary(x.getExpression());
+////            } else if(expression instanceof InfixExpression) {
+////                InfixExpression x = (InfixExpression) expression;
+////                return containsIfTenary(x.getLeftOperand()) || containsIfTenary(x.getRightOperand());
+////            } else if (expression instanceof ConditionalExpression) {
+////                return true;
+////            }
+//
+//            return;
+//
+//        }
 
-            return;
-
-        }
-
-        private void increaseCc(int increased) {
-            cycometricComplexity += increased;
-        }
-
-        private void increaseCc() {
-            cycometricComplexity++;
-        }
-
-        private void checkInnerLoop(Node node) {
+        private void countCycometricComplexity(Node node) {
             for (var statement : node.getChildNodes()) {
-                if(statement instanceof IfStmt){
+                if (statement instanceof IfStmt) {
                     String expr = statement.toString().replace("&&", "&").replace("||", "|");
                     int andCount = StringUtils.countMatches(expr, "&");
                     int orCount = StringUtils.countMatches(expr, "|");
 
-                    increaseCc(andCount + orCount);
+                    cycometricComplexity += andCount + orCount;
                 }
                 if (statement instanceof ForStmt || statement instanceof IfStmt ||
                         statement instanceof ForEachStmt || statement instanceof WhileStmt ||
                         statement instanceof DoStmt || statement instanceof SwitchStmt ||
                         statement instanceof ThrowStmt || statement instanceof TryStmt ||
-                        statement instanceof YieldStmt ) {
+                        statement instanceof YieldStmt) {
+
 //
 //                    System.out.println("Statement");
 //                    System.out.println(statement.getClass());
@@ -136,45 +122,45 @@ public class WMCCalculator {
 
                 }
 
-                checkInnerLoop(statement);
+                countCycometricComplexity(statement);
             }
         }
 
-        private int getStatementCount(Node node) {
-            int cc = 0;
-            var childNodes = node.getChildNodes();
-
-            for (int i = 0; i < childNodes.size(); i++) {
-//                System.out.println();
-//                System.out.println();
-//                System.out.println(i);
-//                System.out.println("\nchild Nodes: " + i + " \n" + (childNodes.get(i).toString()));
-                if (childNodes.get(i) instanceof BlockStmt) {
-//                    System.out.println(childNodes.get(i).getClass());
-                    checkInnerLoop(childNodes.get(i));
-
-                }
-            }
-            System.out.println("cc = " + cc);
-            return cc;
-        }
-
-        private int getFor(Node node) {
-            int cc = 0;
-
-//            increaseCCFromExpression(node);
-//            for (ForStmt ifStmt : node.getChildNodesByType(ForStmt.class)){
-//                    increaseCc();
+//        private int getStatementCount(Node node) {
+//            int cc = 0;
+//            var childNodes = node.getChildNodes();
 //
+//            for (int i = 0; i < childNodes.size(); i++) {
+////                System.out.println();
+////                System.out.println();
+////                System.out.println(i);
+////                System.out.println("\nchild Nodes: " + i + " \n" + (childNodes.get(i).toString()));
+//                if (childNodes.get(i) instanceof BlockStmt) {
+////                    System.out.println(childNodes.get(i).getClass());
+//                    checkInnerLoop(childNodes.get(i));
 //
-//                    System.out.println("\nchild Nodes: \n"  + ( ifStmt.toString()));
-//
+//                }
 //            }
-//            cycometricComplexity += getStatementCount(node);
-//            increaseCCFromExpression(node);
-            checkInnerLoop(node);
-            return cycometricComplexity;
-        }
+//            System.out.println("cc = " + cc);
+//            return cc;
+//        }
+
+//        private int getFor(Node node) {
+//            int cc = 0;
+//
+////            increaseCCFromExpression(node);
+////            for (ForStmt ifStmt : node.getChildNodesByType(ForStmt.class)){
+////                    increaseCc();
+////
+////
+////                    System.out.println("\nchild Nodes: \n"  + ( ifStmt.toString()));
+////
+////            }
+////            cycometricComplexity += getStatementCount(node);
+////            increaseCCFromExpression(node);
+//            countCycometricComplexity(node);
+//            return cycometricComplexity;
+//        }
 
 
         @Override
@@ -234,15 +220,22 @@ public class WMCCalculator {
 
 
             for (int i = 0; i < publicMethods.size(); i++) {
+                cycometricComplexity++;
                 MethodDeclaration method1 = publicMethods.get(i);
-                System.out.println(method1.getName());
+//                System.out.println(method1.getName());
                 int condtionalStatementCount = getConditionalStatement(method1);
-                getFor(method1);
-                System.out.println("cycometricComplexity: " + cycometricComplexity);
-                cycometricComplexity = 0;
+                countCycometricComplexity(method1);
+//                System.out.println("cycometricComplexity: " + cycometricComplexity);
+                totalCycometricComplexity += cycometricComplexity;
+                methodComplexityMap.put(method1.getName().toString(), cycometricComplexity);
+
 //                System.out.println(method1.getName());
 //                System.out.println("condtionalStatementCount: " + condtionalStatementCount);
+                cycometricComplexity = 0;
+
             }
+            System.out.println("WMC =  " + totalCycometricComplexity);
+
             super.visit(n, arg);
         }
     }
